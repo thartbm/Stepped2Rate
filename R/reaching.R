@@ -68,6 +68,10 @@ getReachDevs <- function(ppData, conditionname, maxrotation, flip) {
 
   }
   
+  if (flip) {
+    reachdev <- -1 * reachdev
+  }
+  
   preachdevs <- data.frame(participant, trialno, rotation, target, reachdev)
   
   filename <- sprintf('data/reachdevs_%s_%d.csv',conditionname,maxrotation)
