@@ -42,7 +42,7 @@ selectPavloviaParticipants <- function(rotation_groups=c(30,60)) {
       # if we already have their data, don't add them again...
       if (pp %in% participant) {
         #cat('  participant known\n')
-        next
+        #next
       }
       
       #cat('  participant unknown')
@@ -70,7 +70,7 @@ selectPavloviaParticipants <- function(rotation_groups=c(30,60)) {
       
       ppData <- read.csv(filename, stringsAsFactors = F)
       
-      
+      OK <- checkLearning(ppData, percentage=0.66666)
       
       participant <- c(participant, pp)
       timestamp <- c(timestamp, ts)
@@ -79,7 +79,7 @@ selectPavloviaParticipants <- function(rotation_groups=c(30,60)) {
       ttotal <- c(ttotal, ppData$cumulativetime[249])
       condition <- c(condition, ppData$taskVer[1])
       rotation <- c(rotation, rot_group)
-      used <- c(used, TRUE)
+      used <- c(used, OK)
       
     }
     
@@ -175,7 +175,5 @@ selectParticipants <- function(rotation_groups=c(30,60)) {
   write.csv(participants,'data/participants.csv',row.names=F)
   
   return(participants)
-  
-  
   
 }
