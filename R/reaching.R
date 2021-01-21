@@ -30,10 +30,13 @@ checkLearning <- function(ppData, percentage=0.66666) {
     preachdevs <- getReachDevs(ppData, conditionname=condition, maxrotation=rotation, flip)
   }
   
-  
-  
+  if (mean(preachdevs$reachdev[173:192])/rotation >= percentage) {
+    use = TRUE
+  } else {
+    use = FALSE
+  }
 
-  return(TRUE)
+  return(use)
   
 }
 

@@ -42,7 +42,7 @@ selectPavloviaParticipants <- function(rotation_groups=c(30,60)) {
       # if we already have their data, don't add them again...
       if (pp %in% participant) {
         #cat('  participant known\n')
-        #next
+        next
       }
       
       #cat('  participant unknown')
@@ -175,5 +175,32 @@ selectParticipants <- function(rotation_groups=c(30,60)) {
   write.csv(participants,'data/participants.csv',row.names=F)
   
   return(participants)
+  
+}
+
+sampleSizes <- function() {
+  
+  participants <- read.csv('data/participants.csv', stringsAsFactors = F)
+  
+  cond <- c('abrupt','ramp','steps','abrupt','ramp','steps')[participants$condition+1]
+  
+  rotation <- c()
+  condition <- c()
+  N <- c()
+  
+  for (rot in c(30,60)) {
+    
+    for (conditionname in c('abrupt','ramp','steps')) {
+      
+      rotation <- c(rotation, rot)
+      condition <- c(condition, conditionname)
+      N <- c(N, length(which(participants$rotation == rot & cond == conditionname)))
+      
+    }
+    
+  }
+  
+  print(data.frame(rotation, condition, N))
+  
   
 }
