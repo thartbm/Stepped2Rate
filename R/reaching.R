@@ -70,6 +70,7 @@ getReachDevs <- function(ppData, conditionname, maxrotation, flip) {
   
   if (flip) {
     reachdev <- -1 * reachdev
+    rotation <- -1 * rotation
   }
   
   preachdevs <- data.frame(participant, trialno, rotation, target, reachdev)
