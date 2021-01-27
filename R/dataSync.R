@@ -12,7 +12,6 @@ library('tibble')
 
 fetchQualtricsData <- function(force_request=F) {
   
-  
   survey_ids <- list('30'="SV_eaFKe3T9GjtbvKZ", 
                      '60'="SV_6rKxITgVme2vQUJ" )
   
@@ -24,5 +23,12 @@ fetchQualtricsData <- function(force_request=F) {
     write.csv(data, file=sprintf('../data/qualtrics_tworate%sdeg.csv',rotation), row.names=F)
     
   }
+  
+}
+
+downloadData <- function() {
+  
+  pullPavlovia()
+  fetchQualtricsData(force_request = T)
   
 }

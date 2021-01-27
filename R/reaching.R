@@ -1,3 +1,4 @@
+
 checkLearning <- function(ppData, percentage=0.66666) {
   
   ppData <- ppData[-which(ppData$phase == ''),]
@@ -30,7 +31,10 @@ checkLearning <- function(ppData, percentage=0.66666) {
     preachdevs <- getReachDevs(ppData, conditionname=condition, maxrotation=rotation, flip)
   }
   
-  if (mean(preachdevs$reachdev[173:192])/rotation >= percentage) {
+  #print(ppData$participant[1])
+  #print(preachdevs$reachdev)
+  
+  if (mean(preachdevs$reachdev[173:192], na.rm=T)/rotation >= percentage) {
     use = TRUE
   } else {
     use = FALSE
@@ -43,7 +47,7 @@ checkLearning <- function(ppData, percentage=0.66666) {
 getReachDevs <- function(ppData, conditionname, maxrotation, flip) {
   
   ppname <- ppData$participant[1]
-  
+  print(ppname)
   participant <- c()
   trialno <- c()
   rotation <- c()
@@ -68,13 +72,31 @@ getReachDevs <- function(ppData, conditionname, maxrotation, flip) {
     # dist <- sqrt(X^2 + Y^2)
     idx <- which(sqrt(X^2 + Y^2) > 0.33333)[1]
     reachdev <- c(reachdev, (atan2(Y[idx],X[idx])/pi)*180)
-
+    
   }
   
   if (flip) {
     reachdev <- -1 * reachdev
     rotation <- -1 * rotation
   }
+  
+  reachdev <- reachdev - mean(reachdev[17:32])
+  
+  hi <- rotation
+  hi[which(is.na(rotation))] <- max(rotation, na.rm=T)
+  # hi <- hi * -1
+  # lo <- rotation
+  # lo[which(is.na(rotation))] <- min(rotation, na.rm=T)
+  # lo <- lo * -1
+  # # outlier removal?
+  # hi <- pmax(hi,rep(0,length(rotation)))
+  # lo <- pmin(lo,rep(0,length(rotation)))
+  # #print(hi-reachdev)
+  # #print(lo-reachdev)
+  # reachdev[which( (hi-reachdev) >  30)] <- NA
+  # reachdev[which( (lo-reachdev) < -30)] <- NA
+  # 
+  # print(length(which(is.na(reachdev))))
   
   preachdevs <- data.frame(participant, trialno, rotation, target, reachdev)
   
@@ -127,3 +149,20 @@ rotateTrajectory <- function(X,Y,angle) {
   return(Rcoordinates)
   
 }
+
+
+loadReachData <- function(condition,rotation) {
+  
+  df <- read.csv(sprintf('data/reachdevs_%s_%d.csv',condition,rotation), stringsAsFactors=F)  
+  
+  participants <- read.csv('data/participants.csv', stringsAsFactors = F)
+  
+  good_participants <- participants$participant[which(participants$used == TRUE)]
+  
+  df <- df[which(df$participant %in% good_participants),]
+  
+  return(df)
+  
+}
+
+

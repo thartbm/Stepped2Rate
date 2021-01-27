@@ -70,7 +70,7 @@ selectPavloviaParticipants <- function(rotation_groups=c(30,60)) {
       
       ppData <- read.csv(filename, stringsAsFactors = F)
       
-      OK <- checkLearning(ppData, percentage=0.66666)
+      OK <- checkLearning(ppData, percentage=0.5)
       
       participant <- c(participant, pp)
       timestamp <- c(timestamp, ts)
@@ -178,29 +178,29 @@ selectParticipants <- function(rotation_groups=c(30,60)) {
   
 }
 
-sampleSizes <- function() {
-  
-  participants <- read.csv('data/participants.csv', stringsAsFactors = F)
-  
-  cond <- c('abrupt','ramp','steps','abrupt','ramp','steps')[participants$condition+1]
-  
-  rotation <- c()
-  condition <- c()
-  N <- c()
-  
-  for (rot in c(30,60)) {
-    
-    for (conditionname in c('abrupt','ramp','steps')) {
-      
-      rotation <- c(rotation, rot)
-      condition <- c(condition, conditionname)
-      N <- c(N, length(which(participants$rotation == rot & cond == conditionname)))
-      
-    }
-    
-  }
-  
-  print(data.frame(rotation, condition, N))
-  
-  
-}
+# sampleSizes <- function() {
+#   
+#   participants <- read.csv('data/participants.csv', stringsAsFactors = F)
+#   
+#   cond <- c('abrupt','ramp','steps','abrupt','ramp','steps')[participants$condition+1]
+#   
+#   rotation <- c()
+#   condition <- c()
+#   N <- c()
+#   
+#   for (rot in c(30,60)) {
+#     
+#     for (conditionname in c('abrupt','ramp','steps')) {
+#       
+#       rotation <- c(rotation, rot)
+#       condition <- c(condition, conditionname)
+#       N <- c(N, length(which(participants$rotation == rot & cond == conditionname)))
+#       
+#     }
+#     
+#   }
+#   
+#   print(data.frame(rotation, condition, N))
+#   
+#   
+# }
