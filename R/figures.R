@@ -3,6 +3,9 @@ dataPlot <- function() {
   
   inauguration_2021 = c("#5445b1", "#749dae", "#f3c483", "#5c1a33", "#cd3341","#f7dc6a")
   
+  participants <- read.csv('data/participants.csv', stringsAsFactors = F)
+  OKparticipants <- participants$participant[which(participants$used == TRUE)]
+  
   pdf(file='doc/data_plots.pdf', width=8, height=11)
   
   layout(matrix(c(1:6),nrow=3,byrow=FALSE))
@@ -12,6 +15,8 @@ dataPlot <- function() {
     for (condition in c('abrupt', 'ramp', 'steps')) {
       
       df <- loadReachData(condition,rotation)
+      
+      df <- df[which(df$participant %in% OKparticipants),]
 
       #df <- read.csv(sprintf('data/reachdevs_%s_%d.csv',condition,rotation), stringsAsFactors=F)
       
