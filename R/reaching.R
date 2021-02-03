@@ -1,5 +1,5 @@
 
-checkLearning <- function(ppData, percentage=0.66666) {
+checkLearning <- function(ppData, percentage=0.66666, window=30) {
   
   ppData <- ppData[-which(ppData$phase == ''),]
   ppData <- ppData[-c(1:24),]
@@ -25,26 +25,26 @@ checkLearning <- function(ppData, percentage=0.66666) {
     if (participant %in% unique(reachdevs$participant)) {
       preachdevs <- reachdevs[which(reachdevs$participant == participant),]
     } else {
-      preachdevs <- getReachDevs(ppData, condition, rotation, flip)
+      preachdevs <- getReachDevs(ppData, condition, rotation, flip, window=window)
     }
   } else {
-    preachdevs <- getReachDevs(ppData, conditionname=condition, maxrotation=rotation, flip)
+    preachdevs <- getReachDevs(ppData, conditionname=condition, maxrotation=rotation, flip, window=window)
   }
   
   #print(ppData$participant[1])
-  #print(preachdevs$reachdev)
+  #print(preachdevs$reachdev[173:192])
   
-  if (mean(preachdevs$reachdev[173:192], na.rm=T)/rotation >= percentage) {
-    use = TRUE
-  } else {
+  if (all(is.na(preachdevs$reachdev[173:192])) | mean(preachdevs$reachdev[173:192], na.rm=T)/rotation < percentage) {
     use = FALSE
+  } else {
+    use = TRUE
   }
 
   return(use)
   
 }
 
-getReachDevs <- function(ppData, conditionname, maxrotation, flip) {
+getReachDevs <- function(ppData, conditionname, maxrotation, flip, window=45) {
   
   ppname <- ppData$participant[1]
   print(ppname)
@@ -58,7 +58,8 @@ getReachDevs <- function(ppData, conditionname, maxrotation, flip) {
     
     participant <- c(participant, ppname)
     trialno <- c(trialno, rown)
-    rotation <- c(rotation, ppData$rotation[rown])
+    rot <- ppData$rotation[rown]
+    rotation <- c(rotation, rot)
     target <- c(target, ppData$targetangle_deg[rown])
     
     X <- convertCellToNumVector(ppData$cursorx_rel[rown])
@@ -71,7 +72,18 @@ getReachDevs <- function(ppData, conditionname, maxrotation, flip) {
     Y <- coords[which(step==2),2]
     # dist <- sqrt(X^2 + Y^2)
     idx <- which(sqrt(X^2 + Y^2) > 0.33333)[1]
-    reachdev <- c(reachdev, (atan2(Y[idx],X[idx])/pi)*180)
+    rdev <- (atan2(Y[idx],X[idx])/pi)*180
+    
+    if (is.na(rot)) {rot <- 0}
+    # if outside window, rdev should be set to NA
+    #print(c(rot, window, rdev))
+    if (rot >= 0) {
+      if (is.na(rdev) | (rdev < (-rot-window)) | (rdev > window)) {rdev = NA}
+    } else {
+      if (is.na(rdev) | (rdev < -window) | (rdev > (window-rot))) {rdev = NA}
+    }
+    
+    reachdev <- c(reachdev, rdev)
     
   }
   
