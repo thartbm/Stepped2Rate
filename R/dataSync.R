@@ -3,8 +3,11 @@
 pullPavlovia <- function() {
   
   tr30 <- system('cd ../tworate30deg/; git pull', intern=TRUE)
+  cat(paste0(tr30,'\n'))
   tr60 <- system('cd ../tworate60deg/; git pull', intern=TRUE)
+  cat(paste0(tr60,'\n'))
   RAE <- system('cd ../steps/; git pull', intern=TRUE)
+  cat(paste0(RAE,'\n'))
   
   return(c('tworate30deg'=tr30,
            'tworate60deg'=tr60,
