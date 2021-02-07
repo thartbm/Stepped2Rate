@@ -44,18 +44,19 @@ dataPlot <- function() {
       
       # plot individual participants:
       for (participant in participants) {
-        
         pdf <- df[which(df$participant == participant),]
         lines(pdf$reachdev,col='#FF00FF06')
         
       }
       
       # plot the median reaches across participants
-      med_reachdevs <- aggregate(reachdev ~ trialno, data=df, FUN=median)
+      med_reachdevs <- aggregate(reachdev ~ trialno, data=df, drop=FALSE, FUN=median)
+      #print(length(med_reachdevs$reachdev))
       lines(med_reachdevs,col='#FF00FF')
       
       # fit a two-rate model using the schedule and median reaches
       schedule <- df$rotation[which(df$participant == participants[1])]
+      #print(length(schedule)-length(med_reachdevs$reachdev))
       fit <- SMCL::twoRateFit(schedule       = schedule,
                               reaches        = med_reachdevs$reachdev,
                               gridfits       = 4, 
